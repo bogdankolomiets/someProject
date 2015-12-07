@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">DOU Client</string>
+    <string name="app_name">DOU Клиент BETA</string>
+    <string name="search">Search</string>
+    <string name="toolbarTitleMain">DOU BETA</string>
 </resources>
