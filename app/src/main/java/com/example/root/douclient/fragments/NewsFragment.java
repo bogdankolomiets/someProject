@@ -24,7 +24,6 @@ import java.util.ArrayList;
 public class NewsFragment extends ListFragment implements AbsListView.OnScrollListener {
     private int pageNumber = 0;
     private int maxPageNumber = 149;
-    private static final int lastPageElement = 19;
     private Elements content;
     private ArrayList<String> newsContent = new ArrayList<>();
     private ArrayAdapter<String> adapter;
@@ -91,11 +90,13 @@ public class NewsFragment extends ListFragment implements AbsListView.OnScrollLi
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-        boolean loadMore = (firstVisibleItem + visibleItemCount) >= totalItemCount;
+        boolean loadMore = (firstVisibleItem + visibleItemCount) == totalItemCount;
 
         if(loadMore && newsThread.getStatus() == AsyncTask.Status.FINISHED) {
-            NewsThread newsThread = new NewsThread();
+
+            newsThread = new NewsThread();
             newsThread.execute();
+
         }
 
     }
