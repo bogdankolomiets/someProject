@@ -1,15 +1,18 @@
 package com.example.root.douclient.fragments;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.root.douclient.R;
+import com.example.root.douclient.activity.FullArticleActivity;
 import com.example.root.douclient.adapter.NewsPageAdapter;
 import com.example.root.douclient.objects.NewsArticle;
 
@@ -66,11 +69,12 @@ public class NewsFragmentTest extends ListFragment implements AbsListView.OnScro
                         Element eArticleImageURL = element.select("h2 a img").first();
                         String sArticleImageURL = eArticleImageURL.attr("src");
                         Element eArticleTitle = element.select("h2 a").first();
+                        String sFullArticleURL = eArticleTitle.attr("href");
                         String sArticleTitle = eArticleTitle.html().replace("&nbsp;", " ");
                         Element eArticleText = element.select(".b-typo").first();
                         String sArticleText = eArticleText.text().replace("&nbsp;", " ");
 
-                        newsContent.add(new NewsArticle(sArticleImageURL, sArticleTitle, sArticleText));
+                        newsContent.add(new NewsArticle(sArticleImageURL, sArticleTitle, sArticleText, sFullArticleURL));
                     }
 
 
@@ -114,4 +118,16 @@ public class NewsFragmentTest extends ListFragment implements AbsListView.OnScro
 
     }
 
+
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        String fullArticleURL = newsContent.get(position).getFullNewsArticlePageURL();
+        String articleIconURL = newsContent.get(position).getImageOfArticleURL();
+        Intent intent = new Intent(getActivity(), FullArticleActivity.class);
+        intent.putExtra("fullArticleURL", fullArticleURL);
+        intent.putExtra("articleIconURL", articleIconURL);
+        startActivity(intent);
+    }
 }

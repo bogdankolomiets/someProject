@@ -8,11 +8,13 @@ public class NewsArticle {
     private String imageOfArticleURL;
     private String newsArticleTitle;
     private String newsArticleText;
+    private String fullNewsArticlePageURL;
 
-    public NewsArticle(String imageOfArticleURL, String newsArticleTitle, String newsArticleText) {
+    public NewsArticle(String imageOfArticleURL, String newsArticleTitle, String newsArticleText, String fullNewsArticlePageURL) {
         this.imageOfArticleURL = imageOfArticleURL;
         this.newsArticleTitle = newsArticleTitle;
         this.newsArticleText = newsArticleText;
+        this.fullNewsArticlePageURL = fullNewsArticlePageURL;
     }
 
     public String getImageOfArticleURL() {
@@ -25,6 +27,10 @@ public class NewsArticle {
 
     public String getNewsArticleText() {
         return newsArticleText;
+    }
+
+    public String getFullNewsArticlePageURL() {
+        return fullNewsArticlePageURL;
     }
 
     public void setImageOfArticleURL(String imageOfArticleURL) {
