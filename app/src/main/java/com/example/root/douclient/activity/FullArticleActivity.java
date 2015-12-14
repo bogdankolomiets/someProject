@@ -28,7 +28,7 @@ public class FullArticleActivity extends AppCompatActivity {
     private ImageView toolbarIcon;
     private String fullArticleURL;
     private String sArticleTitle;
-    private String douURL = "http://dou.ua";
+    private static final String douURL = "http://dou.ua";
     private String articleIconURL;
     private Elements articleContent;
     private Element eArticleTitle;
