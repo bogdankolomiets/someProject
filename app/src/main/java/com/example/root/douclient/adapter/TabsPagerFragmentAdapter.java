@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.example.root.douclient.fragments.ForumFragment;
 import com.example.root.douclient.fragments.NewsFragment;
+import com.example.root.douclient.fragments.NewsFragmentTest;
 
 /**
  * Created by root on 04.12.15.
@@ -33,7 +34,7 @@ public class TabsPagerFragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch(position) {
             case 0:
-                return NewsFragment.getInstance();
+                return NewsFragmentTest.getInstance();
             case 1:
                 return ForumFragment.getInstance();
         }
