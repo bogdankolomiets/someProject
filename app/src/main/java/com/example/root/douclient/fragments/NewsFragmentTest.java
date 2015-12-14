@@ -29,9 +29,6 @@ public class NewsFragmentTest extends ListFragment implements AbsListView.OnScro
     private int pageNumber = 0;
     private int maxPageNumber = 149;
     private Elements article;
-    String articleImageURL;
-    String articleTitle;
-    String articleText;
     private ArrayList<NewsArticle> newsContent = new ArrayList<>();
     private NewsThread newsThread = new NewsThread();
 
