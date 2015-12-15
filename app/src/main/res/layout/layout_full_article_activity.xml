@@ -48,18 +48,12 @@
        android:layout_below="@id/articleToolbar"
        app:layout_behavior="@string/appbar_scrolling_view_behavior">
        <LinearLayout
+           android:id="@+id/layoutContentContainer"
            android:layout_width="match_parent"
            android:layout_height="match_parent"
-           android:padding="16dp">
+           android:padding="16dp"
+           android:orientation="vertical" />
 
-           <TextView
-               android:id="@+id/txtContent"
-               android:textSize="14sp"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:text=""/>
-
-       </LinearLayout>
 
    </android.support.v4.widget.NestedScrollView>
 
