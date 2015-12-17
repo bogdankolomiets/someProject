@@ -3,43 +3,20 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/articleContent"
-        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBar"
-            android:fitsSystemWindows="true"
             android:layout_height="wrap_content"
             android:layout_width="match_parent">
-
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/collapsingToolbar"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:fitsSystemWindows="true"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark"
-                app:contentScrim="@color/colorPrimary"
-                app:expandedTitleMarginStart="48dp"
-                app:expandedTitleMarginEnd="64dp">
-                
-                <ImageView
-                    android:id="@+id/fullArticleImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:src="@drawable/example"
-                    android:fitsSystemWindows="true"
-                    android:scaleType="centerCrop"
-                    app:layout_collapseMode="parallax"/>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/articleToolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"/>
-
-            </android.support.design.widget.CollapsingToolbarLayout>
+                    android:theme="@style/ThemeOverlay.AppCompat.Dark"
+                    android:background="@color/colorPrimary"/>
 
         </android.support.design.widget.AppBarLayout>
    <android.support.v4.widget.NestedScrollView

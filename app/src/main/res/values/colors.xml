@@ -4,5 +4,6 @@
     <color name="colorPrimaryDark">#008a9c</color>
     <color name="mainBackGround">#e2e2e2</color>
     <color name="white">#FFF</color>
+    <color name="darkGrey">#424242</color>
         <drawable name="dividerColor">#bdbdbd</drawable>
 </resources>
