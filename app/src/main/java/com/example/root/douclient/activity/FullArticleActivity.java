@@ -6,6 +6,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -55,10 +56,7 @@ public class FullArticleActivity extends AppCompatActivity {
         setContentView(LAYOUT);
         layoutContentContainer = (LinearLayout) findViewById(LAYOUT_CONTENT_CONTAINER_ID);
         fullArticleURL = HTTP_DOU_UA + getIntent().getExtras().getString("fullArticleURL");
-        toolbar = (Toolbar) findViewById(R.id.articleToolbar);
-        toolbar.setTitle("Статья");
-        setSupportActionBar(toolbar);
-
+        initToolbar();
         articleContentThread.execute();
 
     }
@@ -139,6 +137,20 @@ public class FullArticleActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.articleToolbar);
+        toolbar.setTitle("Статья");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
 
