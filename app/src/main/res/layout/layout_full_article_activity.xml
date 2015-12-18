@@ -19,7 +19,7 @@
                     android:background="@color/colorPrimary"/>
 
         </android.support.design.widget.AppBarLayout>
-   <android.support.v4.widget.NestedScrollView
+   <ScrollView
        android:layout_width="match_parent"
        android:layout_height="match_parent"
        android:layout_below="@id/articleToolbar"
@@ -32,7 +32,7 @@
            android:orientation="vertical" />
 
 
-   </android.support.v4.widget.NestedScrollView>
+   </ScrollView>
 
 </android.support.design.widget.CoordinatorLayout>
 

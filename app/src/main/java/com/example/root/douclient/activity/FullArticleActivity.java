@@ -84,9 +84,14 @@ public class FullArticleActivity extends AppCompatActivity {
                         matcher = pattern.matcher(elementsArticleContent.tagName());
                         if (elementsArticleContent.tagName().equals("p") && elementsArticleContent.hasText()) {
                             contentElements.add(new NewsArticlePageElements("CONTENT", elementsArticleContent.text().replace("&nbsp;", " ")));
-                        } else if (elementsArticleContent.children().is("img")) {
-                            String articleContentImageURL = elementsArticleContent.children().attr("src");
-                            contentElements.add(new NewsArticlePageElements("IMAGE", articleContentImageURL));
+                        } else if (elementsArticleContent.children() != null) {
+                            for(Element content : elementsArticleContent.children()) {
+                                if(content.hasAttr("src")) {
+                                    String articleContentImageURL = content.attr("src");
+                                    contentElements.add(new NewsArticlePageElements("IMAGE", articleContentImageURL));
+                                }
+                            }
+
                         } else if (matcher.matches()) {
                             contentElements.add(new NewsArticlePageElements("CONTENT_HEADING", elementsArticleContent.text().replace("&nbsp;", " ")));
                         } else if (elementsArticleContent.tagName().equals("pre")) {
