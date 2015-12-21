@@ -10,6 +10,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.root.douclient.R;
@@ -42,7 +43,6 @@ public class FullArticleActivity extends AppCompatActivity {
     private Elements articleContent;
     Pattern pattern = Pattern.compile("h\\d");
     Matcher matcher;
-
     private Element eArticleTitle;
     private TextView textArticleContent;
     private ImageView imageContentArticle;
@@ -84,14 +84,9 @@ public class FullArticleActivity extends AppCompatActivity {
                         matcher = pattern.matcher(elementsArticleContent.tagName());
                         if (elementsArticleContent.tagName().equals("p") && elementsArticleContent.hasText()) {
                             contentElements.add(new NewsArticlePageElements("CONTENT", elementsArticleContent.text().replace("&nbsp;", " ")));
-                        } else if (elementsArticleContent.children() != null) {
-                            for(Element content : elementsArticleContent.children()) {
-                                if(content.hasAttr("src")) {
-                                    String articleContentImageURL = content.attr("src");
-                                    contentElements.add(new NewsArticlePageElements("IMAGE", articleContentImageURL));
-                                }
-                            }
-
+                        } else if (elementsArticleContent.children().hasAttr("src")) {
+                            String articleContentImageURL = elementsArticleContent.children().attr("src");
+                            contentElements.add(new NewsArticlePageElements("IMAGE", articleContentImageURL));
                         } else if (matcher.matches()) {
                             contentElements.add(new NewsArticlePageElements("CONTENT_HEADING", elementsArticleContent.text().replace("&nbsp;", " ")));
                         } else if (elementsArticleContent.tagName().equals("pre")) {
@@ -134,6 +129,10 @@ public class FullArticleActivity extends AppCompatActivity {
                     layoutContentContainer.addView(imageContentArticle);
                 } else if (element.getElementType().equals("CONTENT_HEADING")) {
                     textArticleContent = (TextView) inflater.inflate(R.layout.text_heading_article_content, null);
+                    textArticleContent.setText(element.getElementContent());
+                    layoutContentContainer.addView(textArticleContent);
+                } else if (element.getElementType().equals("CONTENT_CODE")) {
+                    textArticleContent = (TextView) inflater.inflate(R.layout.code_layout, null);
                     textArticleContent.setText(element.getElementContent());
                     layoutContentContainer.addView(textArticleContent);
                 }

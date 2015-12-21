@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.root.douclient.R;
 import com.example.root.douclient.adapter.TabsPagerFragmentAdapter;
@@ -47,14 +48,16 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.toolbarTitleMain);
         setSupportActionBar(toolbar);
+        toolbar.inflateMenu(R.menu.menu_search);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
 
-        toolbar.inflateMenu(R.menu.menu_search);
+
     }
 
 
