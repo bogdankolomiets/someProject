@@ -38,6 +38,10 @@ public class FullArticleActivity extends AppCompatActivity {
     private String fullArticleURL;
     private String sArticleTitle;
     private String sArticlePageTags = "";
+    private Element eArticleAuthor;
+    String sArticleAuthor;
+    private Element eArticleDateOfPublication;
+    String sArticleDateOfPublication;
     private Elements eArticlePageTags;
     private static final String HTTP_DOU_UA = "http://dou.ua";
     private Elements articleContent;
@@ -69,13 +73,23 @@ public class FullArticleActivity extends AppCompatActivity {
         protected Void doInBackground(Void... params) {
             try {
                 HTMLPage = Jsoup.connect(fullArticleURL).get();
+
+                eArticleDateOfPublication = HTMLPage.select(".b-post-info .date").first();
+                sArticleDateOfPublication = eArticleDateOfPublication.text();
+
+                eArticleAuthor = HTMLPage.select(".b-post-info .author .name a").first();
+                sArticleAuthor = eArticleAuthor.html();
+
                 eArticleTitle = HTMLPage.select("article.b-typo h1").first();
                 sArticleTitle = eArticleTitle.text().replace("&nbsp;", " ");
                 eArticlePageTags = HTMLPage.select(".b-post-tags a");
 
                 for (Element element : eArticlePageTags) {
-                    sArticlePageTags += element.text() + ", ";
-                    System.out.println(sArticlePageTags);
+                    if(element.nextElementSibling()!= null) {
+                        sArticlePageTags += element.text() + ", ";
+                    } else
+                        sArticlePageTags += element.text();
+
                 }
 
                 articleContent = HTMLPage.select("article.b-typo div");
@@ -107,6 +121,12 @@ public class FullArticleActivity extends AppCompatActivity {
 
             LayoutInflater inflater = getLayoutInflater();
 
+            textArticleContent = (TextView) findViewById(R.id.dateOfPublication);
+            textArticleContent.setText(sArticleDateOfPublication);
+
+            textArticleContent = (TextView) findViewById(R.id.authorOfPublication);
+            textArticleContent.setText(sArticleAuthor);
+
             textArticleContent = (TextView) inflater.inflate(R.layout.title_article_page, null);
             textArticleContent.setText(sArticleTitle);
             layoutContentContainer.addView(textArticleContent);
@@ -114,6 +134,7 @@ public class FullArticleActivity extends AppCompatActivity {
             textArticleContent = (TextView) inflater.inflate(R.layout.text_article_content, null);
             textArticleContent.setTextColor(R.color.darkGrey);
             textArticleContent.setText(sArticlePageTags);
+            textArticleContent.setGravity(0x11);
             layoutContentContainer.addView(textArticleContent);
 
             for (NewsArticlePageElements element : contentElements) {
