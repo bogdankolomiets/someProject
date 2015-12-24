@@ -1,16 +1,19 @@
 package com.example.root.douclient.activity;
 
+import android.app.ActionBar;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.webkit.WebView;
+import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.root.douclient.R;
@@ -24,6 +27,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.*;
 
 /**
@@ -50,6 +54,12 @@ public class FullArticleActivity extends AppCompatActivity {
     private Element eArticleTitle;
     private TextView textArticleContent;
     private ImageView imageContentArticle;
+    private HorizontalScrollView tableContentContainer;
+    private TableLayout tableContent;
+    private Element tableHead;
+    private Element tableBody;
+    private List<List<String>> tableContentList;
+    private List<String> tableRowContent = new ArrayList<>();
     private ArrayList<NewsArticlePageElements> contentElements = new ArrayList<>();
     private ArticleContentThread articleContentThread = new ArticleContentThread();
 
@@ -105,6 +115,27 @@ public class FullArticleActivity extends AppCompatActivity {
                             contentElements.add(new NewsArticlePageElements("CONTENT_HEADING", elementsArticleContent.text().replace("&nbsp;", " ")));
                         } else if (elementsArticleContent.tagName().equals("pre")) {
                             contentElements.add(new NewsArticlePageElements("CONTENT_CODE", elementsArticleContent.text()));
+                        } else if (elementsArticleContent.tagName().equals("table")) {
+                            tableContentList = new ArrayList<>();
+                            for (Element elementsTable : elementsArticleContent.children()) {
+                                if (elementsTable.tagName().equals("thead")) {
+                                    tableHead = elementsTable.children().first();
+                                    for (Element tableHeadElements : tableHead.children()) {
+                                        tableRowContent.add(tableHeadElements.text());
+                                    }
+                                    tableContentList.add(tableRowContent);
+                                    tableRowContent = new ArrayList<>();
+                                } else if (elementsTable.tagName().equals("tbody")) {
+                                    for (Element tableBodyContentRow : elementsTable.children()) {
+                                        for (Element tableBodyContentColumn : tableBodyContentRow.children()) {
+                                            tableRowContent.add(tableBodyContentColumn.text());
+                                        }
+                                        tableContentList.add(tableRowContent);
+                                        tableRowContent = new ArrayList<>();
+                                    }
+                                }
+                            }
+                            contentElements.add(new NewsArticlePageElements("CONTENT_TABLE", tableContentList));
                         }
                     }
 
@@ -156,6 +187,24 @@ public class FullArticleActivity extends AppCompatActivity {
                     textArticleContent = (TextView) inflater.inflate(R.layout.code_layout, null);
                     textArticleContent.setText(element.getElementContent());
                     layoutContentContainer.addView(textArticleContent);
+                } else if (element.getElementType().equals("CONTENT_TABLE")) {
+                    tableContentContainer = (HorizontalScrollView) inflater.inflate(R.layout.table_layout, null);
+                    tableContent = new TableLayout(getApplicationContext());
+                    for(List<String> tableListRow : element.getTableContent()) {
+                        TableRow tableRow = new TableRow(getApplicationContext());
+
+                        for(String tableElementText : tableListRow) {
+                            TextView textView = new TextView(getApplicationContext());
+                            textView.setPadding(20,10,20,10);
+                            textView.setTextColor(R.color.darkGrey);
+                            textView.setText(tableElementText);
+                            tableRow.addView(textView);
+                        }
+
+                        tableContent.addView(tableRow);
+                    }
+                    tableContentContainer.addView(tableContent);
+                    layoutContentContainer.addView(tableContentContainer);
                 }
 
             }

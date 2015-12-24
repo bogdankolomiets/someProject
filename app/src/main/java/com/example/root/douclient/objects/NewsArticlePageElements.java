@@ -1,5 +1,7 @@
 package com.example.root.douclient.objects;
 
+import java.util.List;
+
 /**
  * Created by root on 15.12.15.
  */
@@ -7,10 +9,16 @@ public class NewsArticlePageElements {
 
     private String elementType;
     private String elementContent;
+    private List<List<String>> tableContent;
 
     public NewsArticlePageElements(String elementType, String elementContent) {
         this.elementType = elementType;
         this.elementContent = elementContent;
+    }
+
+    public NewsArticlePageElements(String elementType, List<List<String>> tableContent) {
+        this.elementType = elementType;
+        this.tableContent = tableContent;
     }
 
     public String getElementType() {
@@ -19,5 +27,9 @@ public class NewsArticlePageElements {
 
     public String getElementContent() {
         return elementContent;
+    }
+
+    public List<List<String>> getTableContent() {
+        return tableContent;
     }
 }
