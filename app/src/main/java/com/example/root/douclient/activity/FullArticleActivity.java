@@ -107,6 +107,12 @@ public class FullArticleActivity extends AppCompatActivity {
                     for(Element elementsArticleContent : element.children()) {
                         matcher = pattern.matcher(elementsArticleContent.tagName());
                         if (elementsArticleContent.tagName().equals("p") && elementsArticleContent.hasText()) {
+                            for(Element paragChildren : elementsArticleContent.children()) {
+                                if (paragChildren.tagName().equals("img")) {
+                                    String articleContentImageURL = elementsArticleContent.children().attr("src");
+                                    contentElements.add(new NewsArticlePageElements("IMAGE", articleContentImageURL));
+                                }
+                            }
                             contentElements.add(new NewsArticlePageElements("CONTENT", elementsArticleContent.text().replace("&nbsp;", " ")));
                         } else if (elementsArticleContent.children().hasAttr("src")) {
                             String articleContentImageURL = elementsArticleContent.children().attr("src");
