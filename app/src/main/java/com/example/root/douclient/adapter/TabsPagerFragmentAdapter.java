@@ -1,5 +1,6 @@
 package com.example.root.douclient.adapter;
 
+import android.content.Intent;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,9 +35,9 @@ public class TabsPagerFragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch(position) {
             case 0:
-                return NewsFragmentTest.getInstance();
+                return NewsFragmentTest.getInstance("http://dou.ua/lenta/page/");
             case 1:
-                return ForumFragment.getInstance();
+                return NewsFragmentTest.getInstance("http://dou.ua/forums/page/");
         }
         return null;
     }

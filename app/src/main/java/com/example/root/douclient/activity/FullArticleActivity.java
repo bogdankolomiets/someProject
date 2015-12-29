@@ -1,22 +1,31 @@
 package com.example.root.douclient.activity;
 
 import android.app.ActionBar;
+import android.support.v4.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.root.douclient.R;
+import com.example.root.douclient.adapter.CommentsAdapter;
+import com.example.root.douclient.objects.CommentsItem;
 import com.example.root.douclient.objects.NewsArticlePageElements;
 import com.squareup.picasso.Picasso;
 
@@ -24,9 +33,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.*;
 
@@ -43,14 +54,18 @@ public class FullArticleActivity extends AppCompatActivity {
     private String sArticleTitle;
     private String sArticlePageTags = "";
     private Element eArticleAuthor;
+    private Button btnShowComments;
     String sArticleAuthor;
+    private ArrayList<CommentsItem> commentsAnswer;
+    private HashMap<CommentsItem, ArrayList<CommentsItem>> comments;
     private Element eArticleDateOfPublication;
     String sArticleDateOfPublication;
     private Elements eArticlePageTags;
     private static final String HTTP_DOU_UA = "http://dou.ua";
     private Elements articleContent;
-    Pattern pattern = Pattern.compile("h\\d");
-    Matcher matcher;
+    private Pattern pattern = Pattern.compile("h\\d");
+    private Matcher matcher;
+    private String commentsCount;
     private Element eArticleTitle;
     private TextView textArticleContent;
     private ImageView imageContentArticle;
@@ -71,7 +86,17 @@ public class FullArticleActivity extends AppCompatActivity {
         layoutContentContainer = (LinearLayout) findViewById(LAYOUT_CONTENT_CONTAINER_ID);
         fullArticleURL = HTTP_DOU_UA + getIntent().getExtras().getString("fullArticleURL");
         initToolbar();
-        articleContentThread.execute();
+        btnShowComments = new Button(getApplicationContext());
+        btnShowComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showComments();
+                ExpandableListView listView = new ExpandableListView(getApplicationContext());
+                layoutContentContainer.addView(listView);
+                listView.setAdapter(new CommentsAdapter(getApplicationContext(), commentsAnswer, comments));
+            }
+        });
+        articleContentThread.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
     }
 
@@ -93,6 +118,9 @@ public class FullArticleActivity extends AppCompatActivity {
                 eArticleTitle = HTMLPage.select("article.b-typo h1").first();
                 sArticleTitle = eArticleTitle.text().replace("&nbsp;", " ");
                 eArticlePageTags = HTMLPage.select(".b-post-tags a");
+
+                Element eCommentsCount = HTMLPage.getElementById("lblCommentsCount");
+                commentsCount = eCommentsCount.text();
 
                 for (Element element : eArticlePageTags) {
                     if(element.nextElementSibling()!= null) {
@@ -142,6 +170,14 @@ public class FullArticleActivity extends AppCompatActivity {
                                 }
                             }
                             contentElements.add(new NewsArticlePageElements("CONTENT_TABLE", tableContentList));
+                        } else if (elementsArticleContent.tagName().equals("ul")) {
+                            for(Element listChildren : elementsArticleContent.children()){
+                                if(listChildren.tagName().equals("li")) {
+                                    contentElements.add(new NewsArticlePageElements("CONTENT_LIST_ELEMENT", listChildren.text()));
+                                }
+                            }
+                        } else if (elementsArticleContent.tagName().equals("blockquote")) {
+                            contentElements.add(new NewsArticlePageElements("CONTENT_IN_BLOCK", elementsArticleContent.text()));
                         }
                     }
 
@@ -178,6 +214,7 @@ public class FullArticleActivity extends AppCompatActivity {
                 if (element.getElementType().equals("CONTENT")) {
                     textArticleContent = (TextView) inflater.inflate(R.layout.text_article_content, null);
                     textArticleContent.setText(element.getElementContent());
+                    Linkify.addLinks(textArticleContent, Linkify.ALL);
                     layoutContentContainer.addView(textArticleContent);
                 } else if (element.getElementType().equals("IMAGE")) {
                     imageContentArticle = (ImageView) inflater.inflate(R.layout.image_article_content, null);
@@ -211,13 +248,27 @@ public class FullArticleActivity extends AppCompatActivity {
                     }
                     tableContentContainer.addView(tableContent);
                     layoutContentContainer.addView(tableContentContainer);
+                } else if (element.getElementType().equals("CONTENT_LIST_ELEMENT")) {
+                    textArticleContent = (TextView) inflater.inflate(R.layout.text_article_content, null);
+                    textArticleContent.setText("- " + element.getElementContent());
+                    layoutContentContainer.addView(textArticleContent);
+                } else if (element.getElementType().equals("CONTENT_IN_BLOCK")) {
+                    textArticleContent = (TextView) inflater.inflate(R.layout.code_layout, null);
+                    textArticleContent.setText(element.getElementContent());
+                    layoutContentContainer.addView(textArticleContent);
                 }
 
             }
 
+
+            btnShowComments.setGravity(0x11);
+            btnShowComments.setText(commentsCount);
+            layoutContentContainer.addView(btnShowComments);
         }
 
     }
+
+
 
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.articleToolbar);
@@ -231,6 +282,63 @@ public class FullArticleActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    private void showComments() {
+         comments = new HashMap<>();
+         pattern = Pattern.compile("b-comment level-[1-9]");
+         class CommentsThread extends AsyncTask<Void, Void, Void> {
+             Document HTMLPage;
+             Elements pageComments;
+             @Override
+             protected Void doInBackground(Void... params) {
+                 try{
+                     HTMLPage = Jsoup.connect(fullArticleURL).get();
+                     pageComments = HTMLPage.select("#commentsList");
+                     for(Element commentsItem : pageComments) {
+                         matcher = pattern.matcher(commentsItem.nextElementSibling().className());
+                         if(commentsItem.className().equals(".b-comment level-0")
+                                 && matcher.matches()) {
+                             Element eImgAuthorURL = commentsItem.select(".g-avatar").first();
+                             String imgAuthorUrl = eImgAuthorURL.attr("src");
+                             Element authorName = commentsItem.select(".avatar").first();
+                             Element dateOfComment = commentsItem.select(".comment-link").first();
+                             Element commentsContent = commentsItem.select(".text b-typo").first();
+                             CommentsItem cm = new CommentsItem(imgAuthorUrl, authorName.text(),
+                                     dateOfComment.text(), commentsContent.text());
+                             commentsAnswer = new ArrayList<>();
+                             for(Element commentsChildren : commentsItem.siblingElements()) {
+                                 if(!commentsChildren.className().equals(".b-comment level-0")) {
+                                     eImgAuthorURL = commentsItem.select(".g-avatar").first();
+                                     imgAuthorUrl = eImgAuthorURL.attr("src");
+                                     authorName = commentsItem.select(".avatar").first();
+                                     dateOfComment = commentsItem.select(".comment-link").first();
+                                     commentsContent = commentsItem.select(".text b-typo").first();
+                                     commentsAnswer.add(new CommentsItem(imgAuthorUrl, authorName.text(),
+                                             dateOfComment.text(), commentsContent.text()));
+                                 }
+                             }
+                             comments.put(cm, commentsAnswer);
+                         } else if(commentsItem.className().equals(".b-comment level-0")) {
+                             Element eImgAuthorURL = commentsItem.select(".g-avatar").first();
+                             String imgAuthorUrl = eImgAuthorURL.attr("src");
+                             Element authorName = commentsItem.select(".avatar").first();
+                             Element dateOfComment = commentsItem.select(".comment-link").first();
+                             Element commentsContent = commentsItem.select(".text b-typo").first();
+                             CommentsItem cm = new CommentsItem(imgAuthorUrl, authorName.text(),
+                                     dateOfComment.text(), commentsContent.text());
+                             commentsAnswer.add(cm);
+                             comments.put(cm, commentsAnswer);
+                         }
+                     }
+                 } catch (IOException e) {
+                     e.printStackTrace();
+                 }
+                 return null;
+             }
+
+         }
+        new CommentsThread().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
 

@@ -32,6 +32,10 @@ public class NewsFragmentTest extends ListFragment implements AbsListView.OnScro
     private int pageNumber = 0;
     private int maxPageNumber = 149;
     private Elements article;
+    private String pageUrl = "";
+    private Element eArticleText;
+    private String sArticleText;
+    private String sFullArticleURL;
     private ArrayList<NewsArticle> newsContent = new ArrayList<>();
     private NewsThread newsThread = new NewsThread();
 
@@ -39,14 +43,16 @@ public class NewsFragmentTest extends ListFragment implements AbsListView.OnScro
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        pageUrl = getArguments().getString("pageURL");
         newsThread.execute();
         getListView().setOnScrollListener(this);
 
     }
 
-    public static NewsFragmentTest getInstance() {
+    public static NewsFragmentTest getInstance(String pageURL) {
         NewsFragmentTest newsFragmentTest = new NewsFragmentTest();
         Bundle args = new Bundle();
+        args.putString("pageURL", pageURL);
         newsFragmentTest.setArguments(args);
 
         return newsFragmentTest;
@@ -62,18 +68,26 @@ public class NewsFragmentTest extends ListFragment implements AbsListView.OnScro
             if (pageNumber <= maxPageNumber) {
                 try {
 
-                    HTMLPage = Jsoup.connect("http://dou.ua/lenta/page/" + pageNumber).get();
-                    article = HTMLPage.select(".b-lenta article");
+                    HTMLPage = Jsoup.connect(pageUrl + pageNumber).get();
+                    article = HTMLPage.select("article");
 
                     for (Element element : article) {
-                        Element eArticleImageURL = element.select("h2 a img").first();
+                        Element eArticleImageURL = element.select("a img").first();
                         String sArticleImageURL = eArticleImageURL.attr("src");
                         Element eArticleTitle = element.select("h2 a").first();
-                        String sFullArticleURL = eArticleTitle.attr("href");
+                        if(pageUrl.equals("http://dou.ua/lenta/page/"))
+                            sFullArticleURL = eArticleTitle.attr("href");
+                        else {
+                            sFullArticleURL = eArticleTitle.attr("href");
+                            StringBuilder sb = new StringBuilder(sFullArticleURL);
+                            sb.delete(0, 13);
+                            sFullArticleURL = sb.toString();
+                        }
                         String sArticleTitle = eArticleTitle.html().replace("&nbsp;", " ");
-                        Element eArticleText = element.select(".b-typo").first();
-                        String sArticleText = eArticleText.text().replace("&nbsp;", " ");
-
+                        if(pageUrl.equals("http://dou.ua/lenta/page/")) {
+                            eArticleText = element.select(".b-typo").first();
+                            sArticleText = eArticleText.text().replace("&nbsp;", " ");
+                        }
                         newsContent.add(new NewsArticle(sArticleImageURL, sArticleTitle, sArticleText, sFullArticleURL));
                     }
 

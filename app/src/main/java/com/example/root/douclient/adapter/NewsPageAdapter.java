@@ -51,11 +51,11 @@ public class NewsPageAdapter extends ArrayAdapter<NewsArticle> {
         } else newsArticleHolder = (NewsArticleHolder) row.getTag();
 
         NewsArticle newsArticle = data.get(position);
-            newsArticleHolder.txtNewsArticleAuthor.setText(newsArticle.getNewsArticleTitle());
-            newsArticleHolder.txtNewsArticle.setText(newsArticle.getNewsArticleText());
-            Picasso.with(context)
-                    .load(newsArticle.getImageOfArticleURL())
-                    .into(newsArticleHolder.imgNewsArticleIcon);
+        newsArticleHolder.txtNewsArticleAuthor.setText(newsArticle.getNewsArticleTitle());
+        newsArticleHolder.txtNewsArticle.setText(newsArticle.getNewsArticleText());
+        Picasso.with(context)
+                .load(newsArticle.getImageOfArticleURL())
+                .into(newsArticleHolder.imgNewsArticleIcon);
 
 
 

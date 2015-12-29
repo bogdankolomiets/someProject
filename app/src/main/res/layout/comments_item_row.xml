@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:layout_height="wrap_content">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imgCommentsAuthor"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/txtCommentsAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:fontFamily="Roboto Regular"
+        android:paddingLeft="8dp"
+        android:paddingTop="16dp"
+        android:layout_toRightOf="@id/imgCommentsAuthor"/>
+
+    <TextView
+        android:id="@+id/txtCommentsDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:fontFamily="Roboto Regular"
+        android:paddingTop="16dp"
+        android:layout_alignParentRight="true"/>
+    <TextView
+        android:id="@+id/txtComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:fontFamily="Roboto Regular"
+        android:layout_below="@id/imgCommentsAuthor"
+        />
+
+</RelativeLayout>
