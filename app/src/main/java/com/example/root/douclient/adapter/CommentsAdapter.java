@@ -112,7 +112,7 @@ public class CommentsAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getGroupCount() {
-        return this.dataComments.size();
+        return this.dataCommentsAnswer.size();
     }
 
     @Override
