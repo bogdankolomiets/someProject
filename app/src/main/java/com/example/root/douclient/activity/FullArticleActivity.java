@@ -66,6 +66,7 @@ public class FullArticleActivity extends AppCompatActivity {
     private HorizontalScrollView tableContentContainer;
     private TableLayout tableContent;
     private Element tableHead;
+    private ListView comments;
     private Element tableBody;
     private List<List<String>> tableContentList;
     private List<String> tableRowContent = new ArrayList<>();
@@ -78,6 +79,7 @@ public class FullArticleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
         layoutContentContainer = (LinearLayout) findViewById(LAYOUT_CONTENT_CONTAINER_ID);
+        comments = (ListView) findViewById(R.id.commentsList);
         fullArticleURL = HTTP_DOU_UA + getIntent().getExtras().getString("fullArticleURL");
         initToolbar();
         articleContentThread.execute();
@@ -168,14 +170,14 @@ public class FullArticleActivity extends AppCompatActivity {
 
                 Element pageComments = HTMLPage.getElementById("commentsList");
                 for (Element commentItem : pageComments.children()) {
-                    Element eCommentAuthorAvatar = commentItem.select(".b-post-author a img").first();
+                    Element eCommentAuthorAvatar = commentItem.select(".g-avatar").first();
                     String sCommentAuthorAvatar = "http://dou.ua/users/viktor-chyzhdzenka/";
-                    Element commentAuthorName = commentItem.select(".b-post-author .avatar").first();
-                    Element commentDateOfPublication = commentItem.select("b-post-author .comment-link").first();
-                    Element commentText = commentItem.select(".text .b-typo").first();
-                    System.out.println();
-                    //commentsItems.add(new CommentsItem(sCommentAuthorAvatar, commentAuthorName.text(),
-                            //commentDateOfPublication.text(), commentText.text()));
+                    Element commentAuthorName = commentItem.select(".avatar").first();
+                    Element commentDateOfPublication = commentItem.select(".comment-link").first();
+                    Element commentText = commentItem.select(".text.b-typo").first();
+                    System.out.println(commentText.text());
+                    commentsItems.add(new CommentsItem(sCommentAuthorAvatar, commentAuthorName.text(),
+                            commentDateOfPublication.text(), commentText.text()));
                 }
 
 
@@ -257,8 +259,7 @@ public class FullArticleActivity extends AppCompatActivity {
 
             }
 
-//            ListView comments = (ListView) findViewById(R.id.commentsOfPage);
-//            comments.setAdapter(new CommentsAdapterTest(getApplicationContext(), commentsItems));
+            comments.setAdapter(new CommentsAdapterTest(getApplicationContext(), commentsItems));
 
         }
 

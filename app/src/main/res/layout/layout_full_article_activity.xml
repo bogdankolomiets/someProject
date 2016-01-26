@@ -54,17 +54,17 @@
 
                 </RelativeLayout>
 
-                <ListView
-                    android:id="@+id/commentsOfPage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </ListView>
-
             </LinearLayout>
 
         </ScrollView>
+        <ListView
+            android:id="@+id/commentsList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</android.support.design.widget.CoordinatorLayout>
+        </ListView>
+
+
+    </android.support.design.widget.CoordinatorLayout>
 
 

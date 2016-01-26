@@ -35,7 +35,7 @@ public class CommentsAdapterTest extends ArrayAdapter<CommentsItem> {
         CommentsHolder commentsHolder;
 
         if(convertView == null) {
-            LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+            LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.comments_item_row, parent, false);
 
             commentsHolder = new CommentsHolder();
