@@ -1,9 +1,7 @@
 package com.example.root.douclient.activity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,11 +10,6 @@ import android.widget.Toast;
 
 import com.example.root.douclient.R;
 import com.example.root.douclient.adapter.TabsPagerFragmentAdapter;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
 
 /**
  * Created by root on 02.12.15.
