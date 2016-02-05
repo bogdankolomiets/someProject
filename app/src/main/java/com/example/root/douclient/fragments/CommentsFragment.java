@@ -34,15 +34,8 @@ public class CommentsFragment extends ListFragment {
         protected Void doInBackground(Void... params) {
             try {
                 connectToPage();
-                commentBlock = getCommentBlock();
-                for (Element commentItem : commentBlock.children()) {
-                    String authorIconURL = getAuthorIconURL();
-                    String authorName = getAuthorName(commentItem);
-                    String dateOfPublication = getDateOfPublication(commentItem);
-                    String content = getContent(commentItem);
-                    insertCommentItem(authorIconURL, authorName, dateOfPublication, content);
-                }
-
+                selectCommentBlock();
+                addComments();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -59,8 +52,18 @@ public class CommentsFragment extends ListFragment {
         HTMLPage = Jsoup.connect(PageURL).get();
     }
 
-    private Element getCommentBlock() {
-        return HTMLPage.getElementById("commentsList");
+    private void selectCommentBlock() {
+        commentBlock = HTMLPage.getElementById("commentsList");
+    }
+
+    private void addComments() {
+        for (Element commentItem : commentBlock.children()) {
+            String authorIconURL = getAuthorIconURL();
+            String authorName = getAuthorName(commentItem);
+            String dateOfPublication = getDateOfPublication(commentItem);
+            String content = getContent(commentItem);
+            insertCommentItem(authorIconURL, authorName, dateOfPublication, content);
+        }
     }
 
     private String getAuthorIconURL() {
