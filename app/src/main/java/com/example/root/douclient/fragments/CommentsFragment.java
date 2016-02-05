@@ -58,12 +58,12 @@ public class CommentsFragment extends ListFragment {
 
     private void addComments() {
         for (Element commentItem : commentBlock.children()) {
-            String authorIconURL = getAuthorIconURL();
-            String authorName = getAuthorName(commentItem);
-            String dateOfPublication = getDateOfPublication(commentItem);
-            String content = getContent(commentItem);
-            insertCommentItem(authorIconURL, authorName, dateOfPublication, content);
+            insertCommentItem(commentItem);
         }
+    }
+
+    private void insertCommentItem(Element commentItem) {
+        commentsItems.add(new CommentsItem(getAuthorIconURL(), getAuthorName(commentItem), getDateOfPublication(commentItem), getContent(commentItem)));
     }
 
     private String getAuthorIconURL() {
@@ -82,8 +82,6 @@ public class CommentsFragment extends ListFragment {
         return commentItem.select(".text.b-typo").first().text();
     }
 
-    private void insertCommentItem(String authorIconURL, String authorName, String dateofPublicaton, String content) {
-        commentsItems.add(new CommentsItem(authorIconURL, authorName, dateofPublicaton, content));
-    }
+
 
 }
