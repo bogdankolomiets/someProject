@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.example.root.douclient.R;
 import com.example.root.douclient.adapter.CommentsAdapter;
+import com.example.root.douclient.adapter.CommentsListViewAdapter;
 import com.example.root.douclient.objects.CommentsItem;
 import com.example.root.douclient.objects.NewsArticlePageElements;
 import com.squareup.picasso.Picasso;
@@ -57,7 +58,7 @@ public class FullArticleActivity extends AppCompatActivity {
     private Button btnShowComments;
     String sArticleAuthor;
     private ArrayList<CommentsItem> commentsAnswer;
-    private HashMap<CommentsItem, ArrayList<CommentsItem>> comments;
+    //private HashMap<CommentsItem, ArrayList<CommentsItem>> comments;
     private Element eArticleDateOfPublication;
     String sArticleDateOfPublication;
     private Elements eArticlePageTags;
@@ -73,11 +74,12 @@ public class FullArticleActivity extends AppCompatActivity {
     private TableLayout tableContent;
     private Element tableHead;
     private Element tableBody;
+    private ArrayList<CommentsItem> commentData = new ArrayList<>();
     private List<List<String>> tableContentList;
     private List<String> tableRowContent = new ArrayList<>();
     private ArrayList<NewsArticlePageElements> contentElements = new ArrayList<>();
     private ArticleContentThread articleContentThread = new ArticleContentThread();
-
+    private ListView comments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +92,7 @@ public class FullArticleActivity extends AppCompatActivity {
 //        btnShowComments.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                showComments();
+//                showComments(fullArticleURL);
 //            }
 //        });
         articleContentThread.execute();
@@ -178,50 +180,55 @@ public class FullArticleActivity extends AppCompatActivity {
                         }
                     }
                 }
-                    Element pageComments = HTMLPage.getElementById("commentsList");
-                    for (Element commentsItem : pageComments.children()) {
+//                    Element pageComments = HTMLPage.getElementById("commentsList");
+//                    for (Element commentsItem : pageComments.children()) {
 //                        matcher = pattern.matcher(commentsItem.nextElementSibling().className());
-                        System.out.println("!!!!Sibling = " + commentsItem);
-                        System.out.println("!!!!&&!&!&!&!" + commentsItem.className());
-                        if (commentsItem.className().equals("b-comment level-0")) {
-                            Element eImgAuthorURL = commentsItem.select(".avatar > .g-avatar").first();
-                            System.out.println(eImgAuthorURL);
-                            String imgAuthorUrl = "http://s.developers.org.ua/img/avatars/40x40_57196.jpg";
-                            System.out.println("!!!!!!!!!!!!!!!" + imgAuthorUrl);
-                            Element authorName = commentsItem.select(".avatar").first();
-                            System.out.println("!!!!!!!!!!!!!!!" + authorName);
-                            Elements dateOfComment = commentsItem.select(".comment-link");
-                            System.out.println("@@@@@@" + dateOfComment.html());
-                            Element commentsContent = commentsItem.select(".text b-typo").first();
-                            System.out.println("%%%%%%%%%%%" + commentsContent.toString());
-                            CommentsItem cm = new CommentsItem(imgAuthorUrl, authorName.text(),
-                                    dateOfComment.text(), commentsContent.text());
-                            commentsAnswer = new ArrayList<>();
-                            for (Element commentsChildren : commentsItem.siblingElements()) {
-                                if (!commentsChildren.className().equals("b-comment level-0")) {
-                                    eImgAuthorURL = commentsItem.select(".g-avatar").first();
-                                    imgAuthorUrl = "http://s.developers.org.ua/img/avatars/40x40_57196.jpg";
-                                    authorName = commentsItem.select(".avatar").first();
-                                    dateOfComment = commentsItem.select(".comment-link");
-                                    commentsContent = commentsItem.select(".text b-typo").first();
-                                    commentsAnswer.add(new CommentsItem(imgAuthorUrl, authorName.text(),
-                                            dateOfComment.text(), commentsContent.text()));
-                                }
-                            }
-
-                            comments.put(cm, commentsAnswer);
-                        } else if (commentsItem.className().equals("b-comment level-0")) {
-                            Element eImgAuthorURL = commentsItem.select(".g-avatar").first();
-                            String imgAuthorUrl = "http://s.developers.org.ua/img/avatars/40x40_57196.jpg";
-                            Element authorName = commentsItem.select(".avatar").first();
-                            Elements dateOfComment = commentsItem.select(".comment-link");
-                            Elements commentsContent = commentsItem.select(".text b-typo");
-                            CommentsItem cm = new CommentsItem(imgAuthorUrl, authorName.text(),
-                                    dateOfComment.text(), commentsContent.text());
-                            commentsAnswer.add(cm);
-                            comments.put(cm, commentsAnswer);
-                        }
-                    }
+//                        System.out.println("!!!!Sibling = " + commentsItem);
+//                        System.out.println("!!!!&&!&!&!&!" + commentsItem.className());
+//                        if (commentsItem.className().equals("b-comment level-0")) {
+//                            Element eImgAuthorURL = commentsItem.select(".avatar > .g-avatar").first();
+//                            System.out.println(eImgAuthorURL);
+//                            String imgAuthorUrl = "http://s.developers.org.ua/img/avatars/40x40_57196.jpg";
+//                            Element authorName = commentsItem.select(".avatar").first();
+//                            Element dateOfComment = commentsItem.select(".comment-link").first();
+//                            Element commentsContent = commentsItem.select(".text.b-typo").first();
+//                            CommentsItem cm = new CommentsItem(imgAuthorUrl, authorName.text(),
+//                                    dateOfComment.text(), commentsContent.text());
+//                            commentsAnswer = new ArrayList<>();
+//                            for (Element commentsChildren : commentsItem.siblingElements()) {
+//                                if (!commentsChildren.className().equals("b-comment level-0")) {
+//                                    eImgAuthorURL = commentsItem.select(".g-avatar").first();
+//                                    imgAuthorUrl = "http://s.developers.org.ua/img/avatars/40x40_57196.jpg";
+//                                    authorName = commentsItem.select(".avatar").first();
+//                                    dateOfComment = commentsItem.select(".comment-link").first();
+//                                    commentsContent = commentsItem.select(".text.b-typo").first();
+//                                    commentsAnswer.add(new CommentsItem(imgAuthorUrl, authorName.text(),
+//                                            dateOfComment.text(), commentsContent.text()));
+//                                }
+//                            }
+//
+//                            comments.put(cm, commentsAnswer);
+//                        } else if (commentsItem.className().equals("b-comment level-0")) {
+//                            Element eImgAuthorURL = commentsItem.select(".g-avatar").first();
+//                            String imgAuthorUrl = "http://s.developers.org.ua/img/avatars/40x40_57196.jpg";
+//                            Element authorName = commentsItem.select(".avatar").first();
+//                            Element dateOfComment = commentsItem.select(".comment-link").first();
+//                            Element commentsContent = commentsItem.select(".text.b-typo").first();
+//                            CommentsItem cm = new CommentsItem(imgAuthorUrl, authorName.text(),
+//                                    dateOfComment.text(), commentsContent.text());
+//                            commentsAnswer.add(cm);
+//                            comments.put(cm, commentsAnswer);
+//                        }
+//                    }
+                Element commentBlock = HTMLPage.getElementById("commentsList");
+                for (Element commentItem : commentBlock.children()) {
+                    String authorIconURL = "http://s.developers.org.ua/img/avatars/40x40_121535.jpg";
+                    Element commentAuthorName = commentItem.select(".avatar").first();
+                    Element commentDateOfPublication = commentItem.select(".comment-link").first();
+                    Element commentContent = commentItem.select(".text.b-typo").first();
+                    commentData.add(new CommentsItem(authorIconURL, commentAuthorName.text(),
+                            commentDateOfPublication.text(), commentContent.text()));
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -304,10 +311,17 @@ public class FullArticleActivity extends AppCompatActivity {
 //            btnShowComments.setGravity(0x11);
 //            btnShowComments.setText(commentsCount);
 //            layoutContentContainer.addView(btnShowComments);
+            System.out.println("mass" + commentData);
+            comments = (ListView) inflater.inflate(R.layout.comments_layout, null);
+            layoutContentContainer.addView(comments);
+            comments.setAdapter(new CommentsListViewAdapter(getApplicationContext(), commentData));
 
-            ExpandableListView listView = new ExpandableListView(getApplicationContext());
-            layoutContentContainer.addView(listView);
-            listView.setAdapter(new CommentsAdapter(getApplicationContext(), commentsAnswer, comments));
+            //comments.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+
+//            ExpandableListView listView = new ExpandableListView(getApplicationContext());
+//            layoutContentContainer.addView(listView);
+//            listView.setAdapter(new CommentsAdapter(getApplicationContext(), commentsAnswer, comments));
 
         }
 
@@ -329,71 +343,41 @@ public class FullArticleActivity extends AppCompatActivity {
         });
     }
 
-//    private void showComments() {
-//         comments = new HashMap<>();
-//         pattern = Pattern.compile("b-comment level-[1-9]");
-//         class CommentsThread extends AsyncTask<Void, Void, Void> {
-//             Document HTMLPage;
-//             Elements pageComments;
-//             @Override
-//             protected Void doInBackground(Void... params) {
-//                 try{
-//                     HTMLPage = Jsoup.connect(fullArticleURL).get();
-//                     pageComments = HTMLPage.select("#commentsList");
-//                     for(Element commentsItem : pageComments) {
-//                         matcher = pattern.matcher(commentsItem.nextElementSibling().className());
-//                         if(commentsItem.className().equals(".b-comment level-0")
-//                                 && matcher.matches()) {
-//                             Element eImgAuthorURL = commentsItem.select(".g-avatar").first();
-//                             String imgAuthorUrl = eImgAuthorURL.attr("src");
-//                             Element authorName = commentsItem.select(".avatar").first();
-//                             Element dateOfComment = commentsItem.select(".comment-link").first();
-//                             Element commentsContent = commentsItem.select(".text b-typo").first();
-//                             CommentsItem cm = new CommentsItem(imgAuthorUrl, authorName.text(),
-//                                     dateOfComment.text(), commentsContent.text());
-//                             commentsAnswer = new ArrayList<>();
-//                             for(Element commentsChildren : commentsItem.siblingElements()) {
-//                                 if(!commentsChildren.className().equals(".b-comment level-0")) {
-//                                     eImgAuthorURL = commentsItem.select(".g-avatar").first();
-//                                     imgAuthorUrl = eImgAuthorURL.attr("src");
-//                                     authorName = commentsItem.select(".avatar").first();
-//                                     dateOfComment = commentsItem.select(".comment-link").first();
-//                                     commentsContent = commentsItem.select(".text b-typo").first();
-//                                     commentsAnswer.add(new CommentsItem(imgAuthorUrl, authorName.text(),
-//                                             dateOfComment.text(), commentsContent.text()));
-//                                 }
-//                             }
-//                             comments.put(cm, commentsAnswer);
-//                         } else if(commentsItem.className().equals(".b-comment level-0")) {
-//                             Element eImgAuthorURL = commentsItem.select(".g-avatar").first();
-//                             String imgAuthorUrl = eImgAuthorURL.attr("src");
-//                             Element authorName = commentsItem.select(".avatar").first();
-//                             Element dateOfComment = commentsItem.select(".comment-link").first();
-//                             Element commentsContent = commentsItem.select(".text b-typo").first();
-//                             CommentsItem cm = new CommentsItem(imgAuthorUrl, authorName.text(),
-//                                     dateOfComment.text(), commentsContent.text());
-//                             commentsAnswer.add(cm);
-//                             comments.put(cm, commentsAnswer);
-//                         }
-//                     }
-//                 } catch (IOException e) {
-//                     e.printStackTrace();
-//                 }
-//                 return null;
-//             }
-//
-//             @Override
-//             protected void onPostExecute(Void aVoid) {
-//                 super.onPostExecute(aVoid);
-//
-//                 ExpandableListView listView = new ExpandableListView(getApplicationContext());
-//                 listView.setAdapter(new CommentsAdapter(getApplicationContext(), commentsAnswer, comments));
-//                 layoutContentContainer.addView(listView);
-//             }
-//         }
-//
-//        new CommentsThread().execute();
-//    }
+    private void showComments(final String pageURL) {
+        class CommentsThread extends AsyncTask<Void, Void, Void> {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+
+                try {
+                    Document HTMLPage = Jsoup.connect(pageURL).get();
+                    Element commentBlock = HTMLPage.getElementById("commentList");
+                    for (Element commentItem : commentBlock.children()) {
+                        String authorIconURL = "";
+                        Element commentAuthorName = commentItem.select(".avatar").first();
+                        Element commentDateOfPublication = commentItem.select(".comment-link").first();
+                        Element commentContent = commentItem.select(".text.b-typo").first();
+                        commentData.add(new CommentsItem(authorIconURL, commentAuthorName.text(),
+                                commentDateOfPublication.text(), commentContent.text()));
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                ListView comments = new ListView(getApplicationContext());
+                comments.setAdapter(new CommentsListViewAdapter(getApplicationContext(), commentData));
+                layoutContentContainer.addView(comments);
+            }
+        }
+
+        new CommentsThread().execute();
+    }
 
 
 }
