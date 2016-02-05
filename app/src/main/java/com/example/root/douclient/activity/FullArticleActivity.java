@@ -1,10 +1,5 @@
 package com.example.root.douclient.activity;
 
-import android.app.ActionBar;
-import android.support.v4.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
@@ -25,7 +19,11 @@ import android.widget.TextView;
 
 import com.example.root.douclient.R;
 import com.example.root.douclient.adapter.CommentsAdapter;
+<<<<<<< HEAD
 import com.example.root.douclient.adapter.CommentsListViewAdapter;
+=======
+import com.example.root.douclient.adapter.CommentsAdapterTest;
+>>>>>>> origin/feature/collapsingToolbar
 import com.example.root.douclient.objects.CommentsItem;
 import com.example.root.douclient.objects.NewsArticlePageElements;
 import com.squareup.picasso.Picasso;
@@ -34,13 +32,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.regex.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by bogdan on 14.12.15.
@@ -57,8 +55,12 @@ public class FullArticleActivity extends AppCompatActivity {
     private Element eArticleAuthor;
     private Button btnShowComments;
     String sArticleAuthor;
+<<<<<<< HEAD
     private ArrayList<CommentsItem> commentsAnswer;
     //private HashMap<CommentsItem, ArrayList<CommentsItem>> comments;
+=======
+    private ArrayList<CommentsItem> commentsItems = new ArrayList<>();
+>>>>>>> origin/feature/collapsingToolbar
     private Element eArticleDateOfPublication;
     String sArticleDateOfPublication;
     private Elements eArticlePageTags;
@@ -73,6 +75,7 @@ public class FullArticleActivity extends AppCompatActivity {
     private HorizontalScrollView tableContentContainer;
     private TableLayout tableContent;
     private Element tableHead;
+    private ListView comments;
     private Element tableBody;
     private ArrayList<CommentsItem> commentData = new ArrayList<>();
     private List<List<String>> tableContentList;
@@ -86,8 +89,10 @@ public class FullArticleActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
         layoutContentContainer = (LinearLayout) findViewById(LAYOUT_CONTENT_CONTAINER_ID);
+        comments = (ListView) findViewById(R.id.commentsList);
         fullArticleURL = HTTP_DOU_UA + getIntent().getExtras().getString("fullArticleURL");
         initToolbar();
+<<<<<<< HEAD
 //        btnShowComments = new Button(getApplicationContext());
 //        btnShowComments.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -95,6 +100,8 @@ public class FullArticleActivity extends AppCompatActivity {
 //                showComments(fullArticleURL);
 //            }
 //        });
+=======
+>>>>>>> origin/feature/collapsingToolbar
         articleContentThread.execute();
 
     }
@@ -180,6 +187,7 @@ public class FullArticleActivity extends AppCompatActivity {
                         }
                     }
                 }
+<<<<<<< HEAD
 //                    Element pageComments = HTMLPage.getElementById("commentsList");
 //                    for (Element commentsItem : pageComments.children()) {
 //                        matcher = pattern.matcher(commentsItem.nextElementSibling().className());
@@ -229,6 +237,22 @@ public class FullArticleActivity extends AppCompatActivity {
                     commentData.add(new CommentsItem(authorIconURL, commentAuthorName.text(),
                             commentDateOfPublication.text(), commentContent.text()));
                 }
+=======
+
+                Element pageComments = HTMLPage.getElementById("commentsList");
+                for (Element commentItem : pageComments.children()) {
+                    Element eCommentAuthorAvatar = commentItem.select(".g-avatar").first();
+                    String sCommentAuthorAvatar = "http://dou.ua/users/viktor-chyzhdzenka/";
+                    Element commentAuthorName = commentItem.select(".avatar").first();
+                    Element commentDateOfPublication = commentItem.select(".comment-link").first();
+                    Element commentText = commentItem.select(".text.b-typo").first();
+                    System.out.println(commentText.text());
+                    commentsItems.add(new CommentsItem(sCommentAuthorAvatar, commentAuthorName.text(),
+                            commentDateOfPublication.text(), commentText.text()));
+                }
+
+
+>>>>>>> origin/feature/collapsingToolbar
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -307,6 +331,7 @@ public class FullArticleActivity extends AppCompatActivity {
 
             }
 
+<<<<<<< HEAD
 
 //            btnShowComments.setGravity(0x11);
 //            btnShowComments.setText(commentsCount);
@@ -322,6 +347,9 @@ public class FullArticleActivity extends AppCompatActivity {
 //            ExpandableListView listView = new ExpandableListView(getApplicationContext());
 //            layoutContentContainer.addView(listView);
 //            listView.setAdapter(new CommentsAdapter(getApplicationContext(), commentsAnswer, comments));
+=======
+            comments.setAdapter(new CommentsAdapterTest(getApplicationContext(), commentsItems));
+>>>>>>> origin/feature/collapsingToolbar
 
         }
 
@@ -343,6 +371,7 @@ public class FullArticleActivity extends AppCompatActivity {
         });
     }
 
+<<<<<<< HEAD
     private void showComments(final String pageURL) {
         class CommentsThread extends AsyncTask<Void, Void, Void> {
 
@@ -380,4 +409,6 @@ public class FullArticleActivity extends AppCompatActivity {
     }
 
 
+=======
+>>>>>>> origin/feature/collapsingToolbar
 }

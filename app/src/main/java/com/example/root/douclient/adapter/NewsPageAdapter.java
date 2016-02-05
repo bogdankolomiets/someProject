@@ -24,7 +24,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class NewsPageAdapter extends ArrayAdapter<NewsArticle> {
 
     private Context context;
-    private ArrayList<NewsArticle> data;
+    private ArrayList<NewsArticle> data = new ArrayList<>(
+    );
 
     public NewsPageAdapter(Context context, ArrayList<NewsArticle> data) {
         super(context, R.layout.listview_item_row, data);
